@@ -1,4 +1,4 @@
-# Copyright 2008 Kevin Ryde
+# Copyright 2008, 2009, 2010 Kevin Ryde
 
 # This file is part of Gtk2-Ex-TiedListColumn.
 #
@@ -17,17 +17,21 @@
 
 
 package Gtk2::Ex::TiedListColumn;
+use 5.008;
 use strict;
 use warnings;
 use Carp;
 use List::Util qw(min max);
 
-our $VERSION = 1;
+our $VERSION = 2;
 
 use constant DEBUG => 0;
 
 sub new {
   my ($class, $model, $column) = @_;
+  # not "tie my @array, $class, ..." since that provokes "Parentheses
+  # missing around "%s" list" warning -- which you don't get for a literal
+  # string instead of $class
   my @array;
   tie @array, $class, $model, $column;
   return \@array;
@@ -256,28 +260,30 @@ Gtk2::Ex::TiedListColumn - tie an array to a column of a list TreeModel
 =head1 SYNOPSIS
 
  use Gtk2::Ex::TiedListColumn;
- my $my_model = Gtk2::ListStore->new (...);  # or similar
+ # any sort of model ...
+ my $my_model = Gtk2::ListStore->new ('Glib::String');
 
  my @array;
  tie @array, 'Gtk2::Ex::TiedListColumn', $my_model, 0;
 
- my $aref = Gtk2::Ex::TiedListColumn->new ($model, 5);
+ my $aref = Gtk2::Ex::TiedListColumn->new ($my_model, 5);
 
 =head1 DESCRIPTION
 
 TiedListColumn ties an array to a single column of a list-type
 C<Gtk2::TreeModel> object so that reading from the array reads from the
 model.  If the model implements modification functions like C<set>,
-C<insert> and C<remove> in the style of C<Gtk2::ListStore> then changes can
-be made on the array to modify the model too.
+C<insert> and C<remove> in the style of C<Gtk2::ListStore> then writing to
+the array modifies the model too.
 
 Most C<tie> things tend to be better in concept than actuality and
 TiedListColumn is no exception.  The benefit is being able to apply generic
 array algorithms to data in a model, eg. a binary search, uniqifying, or
 perl's array slice manipulation.  As a starting point it's good, but a tie
-is a fair slowdown, and model access is not very fast anyway, so for big
-crunching you're likely to end up copying out to an ordinary array anyway.
-(See C<column_contents> in C<Gtk2::Ex::TreeModelBits> for help on that).
+is a fair slowdown and model access is not very fast anyway, so for big
+crunching you're likely to end up copying data out to an ordinary array
+anyway.  (See C<column_contents> in C<Gtk2::Ex::TreeModelBits> for help on
+that).
 
 =head2 C<delete> and C<exists>
 
@@ -291,11 +297,11 @@ Deleting the endmost element of a TiedListColumn works the same as an
 ordinary array though.  In this case the row is removed from the model,
 shortening it, and C<exists> is then false (beyond the end of the model).
 
-=head2 Other Notes
+=head2 Other Ways To Do It
 
 TiedListColumn differs from C<Gtk2::Ex::TiedList> (part of
 C<Gtk2::Ex::Simple::List>) in presenting just a single column of the model,
-where TiedList gives array elements which are TiedRow objects presenting a
+whereas TiedList gives array elements which are TiedRow objects presenting a
 sub-array of all the values in the row.  TiedListColumn is good if your
 model only has one column, or only one you're interested in.
 
@@ -330,13 +336,12 @@ For example
 
 is the same as
 
-    my @array;
-    tie @array, 'Gtk2::Ex::TiedListColumn', $model, 6;
+    tie my @array, 'Gtk2::Ex::TiedListColumn', $model, 6;
     my $aref = \@array;
 
 If you want your own C<@array> as such then the plain C<tie> is easier.  If
-you want an arrayref to pass around to other funcs then C<new> saves a
-couple of lines of code.
+you want an arrayref to pass around to other funcs then C<new> saves a line
+of code.
 
 =back
 
@@ -354,7 +359,7 @@ obtained later with C<tied>) has the following methods.
 Return the underlying model object or column number.  Eg.
 
     my @array;
-    tie 'Gtk2::Ex::TiedListColumn', $model;
+    tie @array, 'Gtk2::Ex::TiedListColumn', $model;
     ...
     my $tlcobj = tied(@array);
     print $tlcobj->column;  # column 0
@@ -367,21 +372,18 @@ Or likewise through an arrayref
 
 =back
 
-=over 4
-
-=back
-
 =head1 SEE ALSO
 
-L<Gtk2::TreeModel>, L<Gtk2::Ex::TiedList>, L<Gtk2::Ex::TreeModelBits>
+L<Gtk2::TreeModel>, L<Gtk2::Ex::Simple::List> (for
+C<Gtk2::Ex::Simple::TiedList>), L<Gtk2::Ex::TreeModelBits>
 
 =head1 HOME PAGE
 
-L<http://www.geocities.com/user42_kevin/gtk2-ex-tiedlistcolumn/>
+L<http://user42.tuxfamily.org/gtk2-ex-tiedlistcolumn/>
 
 =head1 COPYRIGHT
 
-Copyright 2008 Kevin Ryde
+Copyright 2008, 2009, 2010 Kevin Ryde
 
 Gtk2-Ex-TiedListColumn is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License as published by

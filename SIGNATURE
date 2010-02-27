@@ -1,5 +1,5 @@
 This file contains message digests of all files listed in MANIFEST,
-signed via the Module::Signature module, version 0.55.
+signed via the Module::Signature module, version 0.61.
 
 To verify the content in this distribution, first make sure you have
 Module::Signature installed, then type:
@@ -14,25 +14,36 @@ not run its Makefile.PL or Build.PL.
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
 
-SHA1 8624bcdae55baeef00cd11d5dfcfa60f68710a02 COPYING
-SHA1 7b6af1a5403dc849b8e7300ef0e8d645717e5dee Changes
-SHA1 9e4ea62ae9f22ce0d77877b7418df0566dfe8597 MANIFEST
-SHA1 1e48a2fc19907943c888cef4060584bf8a564a33 MANIFEST.SKIP
-SHA1 253b4e98e19fbbddb11be75e809490fdc9732d32 META.yml
-SHA1 1ecfb951072c554edeac05b1917008dc6ef01847 Makefile.PL
-SHA1 e9aea966d18fd6e38c75dd785d057c7cb9ea2899 debian/changelog
-SHA1 1b6453892473a467d07372d45eb05abc2031647a debian/compat
-SHA1 7b518163bb188252da215297902e6a73c7ba9625 debian/control
-SHA1 c506426b3fc603c1b5dc0cbc981f9b52c8f32272 debian/copyright
+SHA1 842745cb706f8f2126506f544492f7a80dbe29b3 COPYING
+SHA1 8f6a688448b2e370dbf5d74a56b731798112362e Changes
+SHA1 cba9f26be49ae46dc7524b33016f5cdd9b3e94c4 MANIFEST
+SHA1 a5702ed4c66c943b47354756b340812302d15e6f MANIFEST.SKIP
+SHA1 29cdac74af3e51d65ad7ec00a5acb788a5a7c12e META.yml
+SHA1 0dd396d4dc43c7dbc317fb0b5e193ae461e6d118 Makefile.PL
+SHA1 eac2394941be9c071edc77fc121706cccd97bd3c debian/changelog
+SHA1 ac3478d69a3c81fa62e60f5c3696165a4e5e6ac4 debian/compat
+SHA1 cc98ce6f87fe357a9345497ca43ae5b0f3162a8e debian/control
+SHA1 5609b45a2416e86b8c690b5e48fc75956e5cb528 debian/copyright
 SHA1 c247b07dc432a2a7bb52bf24132ecdfb560b6fe8 debian/rules
-SHA1 8a387b663e5eceb86624939e0990a77940efc43c debian/watch
-SHA1 1982c25bea1aaa16c521ff2da62234da9e56e775 lib/Gtk2/Ex/TiedListColumn.pm
-SHA1 cbf29ae192545b6d46e2dd902278d8aca6dbe7a6 t/TiedListColumn.t
-SHA1 a661a39e55a4127aecb1b97a631c4f01f7dce8c6 t/pod.t
+SHA1 9e0feb6017b8a8962dccbee4138a56cdc857d8c3 debian/watch
+SHA1 bfcc6179f52eb0548479dbfaaf153cc7d228295f devel/array-base.t
+SHA1 00c7fff17badb82bd4750b5cf9c2044bc69678dd devel/tied-simple-list.pl
+SHA1 79f703c85449e041e88c4e91f5fc738bb8974aa0 inc/MyMakeMakerExtras.pm
+SHA1 63427b66eb26f013f10c835b0cf320c93361f310 inc/my_pod2html
+SHA1 2bc36cd5b2dc11895601ebba14b87d5a74cdbd06 lib/Gtk2/Ex/TiedListColumn.pm
+SHA1 11eda0347af48309996833a4da214197e31b85fb t/0-META-read.t
+SHA1 a343ed4dce96d05de51eed1ec065911584b96fce t/0-Test-DistManifest.t
+SHA1 bba0dc087cbe64d8f100ab77e6cef061c0bebf27 t/0-Test-Pod.t
+SHA1 5fa94e1e88e44064d1e6b21c88a4c9374a17bfd1 t/0-Test-Synopsis.t
+SHA1 9a19fa262c1cc6ee6afe638600ce880500a91946 t/0-Test-YAML-Meta.t
+SHA1 106d0df1afe36e87dec619383e24d0287e574ce8 t/TiedListColumn.t
+SHA1 e5b9059d5e27d380fc9418095d773ad5f96baa06 t/inc/MyTestHelpers.pm
+SHA1 6aad0e60f2a7061d19062d5f0ec3777513bf6e59 t/inc/Test/Weaken/Gtk2.pm
+SHA1 eba58d283c5e9cc00c6bc0000ecea98bfa1d2391 t/test-weaken.t
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
+Version: GnuPG v1.4.10 (GNU/Linux)
 
-iD8DBQFJNasRLFMCIV9q3ToRAhIHAJ9ccM9rl4Vdnziq4GSd6rAfncZfjACgk9pN
-700VkTxvj3SO9uyP/6K/UkI=
-=kVIj
+iD8DBQFLiGSULFMCIV9q3ToRAjLQAKCWTVgWpKVrQrRa8D1BJEGMEKl47ACggX1v
+lZJvHMrwCAutrD6pu0nHkpM=
+=Ig0S
 -----END PGP SIGNATURE-----

@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# Copyright 2008 Kevin Ryde
+# Copyright 2008, 2009, 2010 Kevin Ryde
 
 # This file is part of Gtk2-Ex-TiedListColumn.
 #
@@ -17,47 +17,50 @@
 # You should have received a copy of the GNU General Public License along
 # with Gtk2-Ex-TiedListColumn.  If not, see <http://www.gnu.org/licenses/>.
 
-
+use 5.008;
 use strict;
 use warnings;
 use Gtk2::Ex::TiedListColumn;
+use Test::More tests => 2523;
 
-use Test::More tests => 2518;
-use Gtk2;
+use FindBin;
+use File::Spec;
+use lib File::Spec->catdir($FindBin::Bin,'inc');
+use MyTestHelpers;
 
-ok ($Gtk2::Ex::TiedListColumn::VERSION >= 1);
-ok (Gtk2::Ex::TiedListColumn->VERSION  >= 1);
+SKIP: { eval 'use Test::NoWarnings; 1'
+          or skip 'Test::NoWarnings not available', 1; }
 
-diag ("Perl-Gtk2 version ",Gtk2->VERSION);
-diag ("Perl-Glib version ",Glib->VERSION);
-diag ("Compiled against Glib version ",
-      Glib::MAJOR_VERSION(), ".",
-      Glib::MINOR_VERSION(), ".",
-      Glib::MICRO_VERSION(), ".");
-diag ("Running on       Glib version ",
-      Glib::major_version(), ".",
-      Glib::minor_version(), ".",
-      Glib::micro_version(), ".");
-diag ("Compiled against Gtk version ",
-      Gtk2::MAJOR_VERSION(), ".",
-      Gtk2::MINOR_VERSION(), ".",
-      Gtk2::MICRO_VERSION(), ".");
-diag ("Running on       Gtk version ",
-      Gtk2::major_version(), ".",
-      Gtk2::minor_version(), ".",
-      Gtk2::micro_version(), ".");
+my $want_version = 2;
+cmp_ok ($Gtk2::Ex::TiedListColumn::VERSION, '>=', $want_version,
+        'VERSION variable');
+cmp_ok (Gtk2::Ex::TiedListColumn->VERSION,  '>=', $want_version,
+        'VERSION class method');
+{ ok (eval { Gtk2::Ex::TiedListColumn->VERSION($want_version); 1 },
+      "VERSION class check $want_version");
+  my $check_version = $want_version + 1000;
+  ok (! eval { Gtk2::Ex::TiedListColumn->VERSION($check_version); 1 },
+      "VERSION class check $check_version");
+}
+
+require Gtk2;
+MyTestHelpers::glib_gtk_versions();
 
 
 # pretend insert_with_values() not available, as pre-Gtk 2.6
 #
-if (1 || $ENV{'MY_DEVELOPMENT_HACK_NO_INSERT_WITH_VALUES'}) {
+if ($ENV{'MY_DEVELOPMENT_HACK_NO_INSERT_WITH_VALUES'}) {
+  diag "Applying MY_DEVELOPMENT_HACK_NO_INSERT_WITH_VALUES";
+
   Gtk2::ListStore->can('insert_with_values'); # force autoload
-  diag "can insert_with_values: ",
+  diag " can('insert_with_values'): ",
     Gtk2::ListStore->can('insert_with_values')||'no',"\n";
 
-  undef *Gtk2::ListStore::insert_with_values;
+  { no warnings 'once';
+    undef *Gtk2::ListStore::insert_with_values;
+  }
 
-  diag "can insert_with_values: ",
+  diag " can('insert_with_values'): ",
     Gtk2::ListStore->can('insert_with_values')||'no',"\n";
   die if Gtk2::ListStore->can('insert_with_values');
 }
@@ -90,15 +93,24 @@ if (1 || $ENV{'MY_DEVELOPMENT_HACK_NO_INSERT_WITH_VALUES'}) {
   my $store = Gtk2::ListStore->new ('Glib::String');
   my @a;
   tie @a, 'Gtk2::Ex::TiedListColumn', $store, 0;
-  is (tied(@a)->model, $store,
+  my $tobj = tied(@a);
+
+  ok ($tobj->VERSION >= $want_version, 'VERSION object method');
+  $tobj->VERSION ($want_version);
+
+  is ($tobj->model, $store,
       'model() accessor');
-  is (tied(@a)->column, 0,
+  is ($tobj->column, 0,
       'column() accessor');
 }
 
 {
   my $store = Gtk2::ListStore->new ('Glib::String');
   my $aref = Gtk2::Ex::TiedListColumn->new ($store);
+  my $tobj = tied(@$aref);
+
+  ok ($tobj->VERSION >= $want_version, 'VERSION object method');
+  $tobj->VERSION ($want_version);
 
   is (tied(@$aref)->model, $store,
       'model() accessor');
@@ -110,8 +122,7 @@ if (1 || $ENV{'MY_DEVELOPMENT_HACK_NO_INSERT_WITH_VALUES'}) {
 #------------------------------------------------------------------------------
 
 my $store = Gtk2::ListStore->new (('Glib::Int') x 6, 'Glib::String');
-my @a;
-tie @a, 'Gtk2::Ex::TiedListColumn', $store, 6;
+tie my @a, 'Gtk2::Ex::TiedListColumn', $store, 6;
 my @b;
 
 sub store_contents {
@@ -298,7 +309,7 @@ sub set_store {
   delete $a[0];
   delete $b[0];
   is_deeply (store_contents(), \@b,
-             'delete non-existant');
+             'delete non-existent');
 
   set_store ('a');
   delete $a[0];
@@ -310,7 +321,7 @@ sub set_store {
   delete $a[99];
   delete $b[99];
   is_deeply (store_contents(), \@b,
-             'delete big non-existant');
+             'delete big non-existent');
 
   set_store ('a','b');
   delete $a[0];
@@ -353,7 +364,7 @@ sub set_store {
 
 SKIP: {
   $store->can('insert_with_values')
-    or skip 'no insert_with_values()', 2;
+    or skip 'no insert_with_values() for push', 2;
 
   set_store ();
   push @a, 'z';
@@ -406,7 +417,7 @@ SKIP: {
 
 SKIP: {
   $store->can('insert_with_values')
-    or skip 'no insert_with_values()', 4;
+    or skip 'no insert_with_values() for unshift', 4;
 
   set_store ();
   is (unshift(@a,'z'), unshift(@b,'z'));
@@ -425,7 +436,7 @@ SKIP: {
 #
 SKIP: {
   $store->can('insert_with_values')
-    or skip 'no insert_with_values()', 2437;
+    or skip 'no insert_with_values() for splice', 2437;
 
   my $a_warn = 0;
   my $b_warn = 0;
