@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-# Copyright 2008, 2009 Kevin Ryde
+# Copyright 2008, 2009, 2010 Kevin Ryde
 
 # This file is part of Gtk2-Ex-TiedListColumn.
 #
@@ -22,11 +22,8 @@ use warnings;
 use Gtk2::Ex::TiedListColumn;
 use Test::More;
 
-use FindBin;
-use File::Spec;
-use lib File::Spec->catdir($FindBin::Bin,'inc');
+use lib 't';
 use MyTestHelpers;
-use Test::Weaken::Gtk2;
 
 # Test::Weaken 2.000 for leaks(), but 3.001 better as descends into the tied
 # object ...
@@ -36,7 +33,7 @@ if (! $have_test_weaken) {
   plan skip_all => "due to Test::Weaken 2.000 not available -- $@";
 }
 
-plan tests => 2;
+plan tests => 3;
 
 SKIP: { eval 'use Test::NoWarnings; 1'
           or skip 'Test::NoWarnings not available', 1; }
@@ -51,10 +48,22 @@ MyTestHelpers::glib_gtk_versions();
   my $leaks = Test::Weaken::leaks
     (sub {
        my $store = Gtk2::ListStore->new ('Glib::String');
+        my @array;
+       tie @array, 'Gtk2::Ex::TiedListColumn', $store;
+       return [ \@array, $store ];
+     });
+  is ($leaks, undef, 'deep garbage collection - array var');
+  if ($leaks && defined &explain) {
+    diag "Test-Weaken ", explain $leaks;
+  }
+}{
+  my $leaks = Test::Weaken::leaks
+    (sub {
+       my $store = Gtk2::ListStore->new ('Glib::String');
        my $aref = Gtk2::Ex::TiedListColumn->new ($store);
        return [ $aref, $store ];
      });
-  is ($leaks, undef, 'deep garbage collection');
+  is ($leaks, undef, 'deep garbage collection - arrayref');
   if ($leaks && defined &explain) {
     diag "Test-Weaken ", explain $leaks;
   }

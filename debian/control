@@ -31,7 +31,7 @@ Bugs: mailto:user42@zip.com.au
 
 Package: libgtk2-ex-tiedlistcolumn-perl
 Architecture: all
-Depends: perl (>= 5.8), libgtk2-perl, ${misc:Depends}
+Depends: perl (>= 5.8), libgtk2-perl, ${perl:Depends}, ${misc:Depends}
 Description: Perl tied array accessing a Gtk TreeModel object
  Gtk2::Ex::TiedListColumn ties an array to a column of a
  Gtk2::TreeModel object.  Reading and writing the array reads and

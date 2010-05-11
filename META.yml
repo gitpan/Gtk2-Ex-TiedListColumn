@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:               Gtk2-Ex-TiedListColumn
-version:            2
+version:            3
 abstract:           Tie an array to a Gtk2-Perl TreeModel.
 author:
     - Kevin Ryde <user42@zip.com.au>

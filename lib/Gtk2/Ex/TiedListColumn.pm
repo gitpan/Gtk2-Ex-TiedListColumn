@@ -23,17 +23,13 @@ use warnings;
 use Carp;
 use List::Util qw(min max);
 
-our $VERSION = 2;
+our $VERSION = 3;
 
 use constant DEBUG => 0;
 
 sub new {
   my ($class, $model, $column) = @_;
-  # not "tie my @array, $class, ..." since that provokes "Parentheses
-  # missing around "%s" list" warning -- which you don't get for a literal
-  # string instead of $class
-  my @array;
-  tie @array, $class, $model, $column;
+  tie (my @array, $class, $model, $column);
   return \@array;
 }
 
@@ -202,7 +198,7 @@ sub SPLICE {
     carp "TiedListColumn: offset $offset before start of array";
     $offset = 0;
   } elsif ($offset < 0) {
-    $offset = $total + $offset;
+    $offset += $total;
   } elsif ($offset > $total) {
     carp "TiedListColumn: offset $offset past end of array";
     $offset = $total;
@@ -251,7 +247,6 @@ sub SPLICE {
 
 1;
 __END__
-
 
 =head1 NAME
 
@@ -336,7 +331,7 @@ For example
 
 is the same as
 
-    tie my @array, 'Gtk2::Ex::TiedListColumn', $model, 6;
+    tie (my @array, 'Gtk2::Ex::TiedListColumn', $model, 6);
     my $aref = \@array;
 
 If you want your own C<@array> as such then the plain C<tie> is easier.  If
@@ -375,7 +370,8 @@ Or likewise through an arrayref
 =head1 SEE ALSO
 
 L<Gtk2::TreeModel>, L<Gtk2::Ex::Simple::List> (for
-C<Gtk2::Ex::Simple::TiedList>), L<Gtk2::Ex::TreeModelBits>
+C<Gtk2::Ex::Simple::TiedList>), L<Gtk2::Ex::TiedTreePath>,
+L<Gtk2::Ex::TreeModelBits>
 
 =head1 HOME PAGE
 

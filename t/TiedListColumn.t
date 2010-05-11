@@ -21,21 +21,19 @@ use 5.008;
 use strict;
 use warnings;
 use Gtk2::Ex::TiedListColumn;
-use Test::More tests => 2523;
+use Test::More tests => 2524;
 
-use FindBin;
-use File::Spec;
-use lib File::Spec->catdir($FindBin::Bin,'inc');
+use lib 't';
 use MyTestHelpers;
 
-SKIP: { eval 'use Test::NoWarnings; 1'
-          or skip 'Test::NoWarnings not available', 1; }
+BEGIN {
+ SKIP: { eval 'use Test::NoWarnings; 1'
+           or skip 'Test::NoWarnings not available', 1; }
+}
 
-my $want_version = 2;
-cmp_ok ($Gtk2::Ex::TiedListColumn::VERSION, '>=', $want_version,
-        'VERSION variable');
-cmp_ok (Gtk2::Ex::TiedListColumn->VERSION,  '>=', $want_version,
-        'VERSION class method');
+my $want_version = 3;
+is ($Gtk2::Ex::TiedListColumn::VERSION, $want_version, 'VERSION variable');
+is (Gtk2::Ex::TiedListColumn->VERSION,  $want_version, 'VERSION class method');
 { ok (eval { Gtk2::Ex::TiedListColumn->VERSION($want_version); 1 },
       "VERSION class check $want_version");
   my $check_version = $want_version + 1000;
@@ -45,25 +43,8 @@ cmp_ok (Gtk2::Ex::TiedListColumn->VERSION,  '>=', $want_version,
 
 require Gtk2;
 MyTestHelpers::glib_gtk_versions();
-
-
-# pretend insert_with_values() not available, as pre-Gtk 2.6
-#
-if ($ENV{'MY_DEVELOPMENT_HACK_NO_INSERT_WITH_VALUES'}) {
-  diag "Applying MY_DEVELOPMENT_HACK_NO_INSERT_WITH_VALUES";
-
-  Gtk2::ListStore->can('insert_with_values'); # force autoload
-  diag " can('insert_with_values'): ",
-    Gtk2::ListStore->can('insert_with_values')||'no',"\n";
-
-  { no warnings 'once';
-    undef *Gtk2::ListStore::insert_with_values;
-  }
-
-  diag " can('insert_with_values'): ",
-    Gtk2::ListStore->can('insert_with_values')||'no',"\n";
-  die if Gtk2::ListStore->can('insert_with_values');
-}
+diag "ListStore can('insert_with_values'): ",
+  Gtk2::ListStore->can('insert_with_values')||'no',"\n";
 
 
 #------------------------------------------------------------------------------
@@ -72,6 +53,7 @@ if ($ENV{'MY_DEVELOPMENT_HACK_NO_INSERT_WITH_VALUES'}) {
 {
   my $store = Gtk2::ListStore->new ('Glib::String');
   my $aref = Gtk2::Ex::TiedListColumn->new ($store);
+  require Scalar::Util;
   Scalar::Util::weaken ($aref);
   is ($aref, undef, 'aref garbage collected when weakened');
 }
@@ -79,6 +61,7 @@ if ($ENV{'MY_DEVELOPMENT_HACK_NO_INSERT_WITH_VALUES'}) {
 {
   my $store = Gtk2::ListStore->new ('Glib::String');
   my $aref = Gtk2::Ex::TiedListColumn->new ($store);
+  require Scalar::Util;
   Scalar::Util::weaken ($store);
   ok ($store, 'store held alive by aref');
   $aref = undef;
@@ -95,7 +78,7 @@ if ($ENV{'MY_DEVELOPMENT_HACK_NO_INSERT_WITH_VALUES'}) {
   tie @a, 'Gtk2::Ex::TiedListColumn', $store, 0;
   my $tobj = tied(@a);
 
-  ok ($tobj->VERSION >= $want_version, 'VERSION object method');
+  is ($tobj->VERSION, $want_version, 'VERSION object method');
   $tobj->VERSION ($want_version);
 
   is ($tobj->model, $store,
@@ -109,7 +92,7 @@ if ($ENV{'MY_DEVELOPMENT_HACK_NO_INSERT_WITH_VALUES'}) {
   my $aref = Gtk2::Ex::TiedListColumn->new ($store);
   my $tobj = tied(@$aref);
 
-  ok ($tobj->VERSION >= $want_version, 'VERSION object method');
+  is ($tobj->VERSION, $want_version, 'VERSION object method');
   $tobj->VERSION ($want_version);
 
   is (tied(@$aref)->model, $store,
@@ -381,7 +364,10 @@ SKIP: {
 
 {
   set_store ();
-  is (pop @a, pop @b);
+  is (pop @a, pop @b,
+      'pop empty - scalar context');
+  is_deeply ([pop @a], [pop @b],
+             'pop empty - array context');
   is_deeply (store_contents(), \@b,
              'pop empty');
 
