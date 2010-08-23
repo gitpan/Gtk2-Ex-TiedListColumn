@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
 
 # Copyright 2008, 2009, 2010 Kevin Ryde
 
@@ -24,19 +24,14 @@ use Test::More;
 
 use lib 't';
 use MyTestHelpers;
+BEGIN { MyTestHelpers::nowarnings() }
 
 # Test::Weaken 2.000 for leaks(), but 3.001 better as descends into the tied
 # object ...
 #
-my $have_test_weaken = eval "use Test::Weaken 2.000; 1";
-if (! $have_test_weaken) {
-  plan skip_all => "due to Test::Weaken 2.000 not available -- $@";
-}
-
-plan tests => 3;
-
-SKIP: { eval 'use Test::NoWarnings; 1'
-          or skip 'Test::NoWarnings not available', 1; }
+eval "use Test::Weaken 2.000; 1"
+  or plan skip_all => "due to Test::Weaken 2.000 not available -- $@";
+plan tests => 2;
 
 diag ("Test::Weaken version ", Test::Weaken->VERSION);
 require Gtk2;
@@ -48,7 +43,7 @@ MyTestHelpers::glib_gtk_versions();
   my $leaks = Test::Weaken::leaks
     (sub {
        my $store = Gtk2::ListStore->new ('Glib::String');
-        my @array;
+       my @array;
        tie @array, 'Gtk2::Ex::TiedListColumn', $store;
        return [ \@array, $store ];
      });

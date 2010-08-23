@@ -31,11 +31,14 @@ MyMakeMakerExtras::WriteMakefile
    AUTHOR       => 'Kevin Ryde <user42@zip.com.au>',
    LICENSE      => 'gpl',
    SIGN         => 1,
-   MIN_PERL_VERSION => 5.008,
+   MIN_PERL_VERSION => '5.008',
 
    PREREQ_PM    => {
                     # think any version might be
                     'Gtk2' => 0,
+
+                    # my WidgetBits
+                    'Gtk2::Ex::ContainerBits' => 21, # new in v.21
                    },
 
    META_MERGE
@@ -47,7 +50,6 @@ MyMakeMakerExtras::WriteMakefile
         => { maximum_tests
              => { description => 'Have "make test" do as much as possible.',
                   requires => { 'Test::Weaken' => '2.000',
-                                'Test::NoWarnings' => 0,
                               },
                 },
              maximum_devel

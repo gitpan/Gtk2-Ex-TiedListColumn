@@ -21,7 +21,7 @@ use 5.008;
 use strict;
 use warnings;
 
-our $VERSION = 3;
+our $VERSION = 4;
 
 # uncomment this to run the ### lines
 #use Smart::Comments;
@@ -90,7 +90,7 @@ sub FETCHSIZE {
   return ($$self)->get_depth;
 }
 
-# big negatives already normalized to at worst -1 by the time they get here
+# big negative sizes normalized to 0 by the time they get here
 sub STORESIZE {
   my ($self, $want_size) = @_;
   ### TiedTreePath STORESIZE: $want_size
@@ -219,9 +219,9 @@ Gtk2::Ex::TiedTreePath - tie an array to a Gtk2::TreePath
 TiedTreePath ties a Perl array to a C<Gtk2::TreePath> object so that reading
 and writing the array acts on the indices making up the path.
 
-Most C<tie> things are better in concept than actuality and TiedTreePath is
-one of them.  Being able to store to individual elements is handy, as are
-Perl operations like push and pop, but native C<Gtk2::TreePath> will be best
+Like most C<tie> things, TiedTreePath is probably better in concept than
+actuality.  Being able to store to individual elements is handy, as are Perl
+operations like push and pop, but a native C<Gtk2::TreePath> will suffice
 for most uses.
 
 =head2 C<delete> and C<exists>

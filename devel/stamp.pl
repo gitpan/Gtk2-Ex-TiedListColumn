@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-# Copyright 2008, 2009, 2010 Kevin Ryde
+# Copyright 2010 Kevin Ryde
 
 # This file is part of Gtk2-Ex-TiedListColumn.
 #
@@ -24,49 +24,7 @@ use Gtk2;
 
 my $store = Gtk2::ListStore->new ('Glib::Int');
 $store->insert_with_values (0, 0=>123);
-$store->insert_with_values (1, 0=>456);
-$store->insert_with_values (2, 0=>789);
-
-
-{
-  require Gtk2::Ex::Simple::TiedList;
-  my @s;
-  tie @s, 'Gtk2::Ex::Simple::TiedList', $store;
-
-  print "s len $#s\n";
-  print Dumper(\@s);
-  foreach my $i (0 .. $#s) {
-    print $s[$i],"\n";
-    print Dumper($s[$i]);
-  }
-  exit 0;
-}
-{
-  require Gtk2::Ex::TiedListColumn;
-  my @a;
-  tie @a, 'Gtk2::Ex::TiedListColumn', $store;
-  print $a[0],"\n";
-  print $a[1],"\n";
-  print $a[-1],"\n";
-
-  $a[-1] = 777;
-  if (exists $a[-1]) { print "yes\n"; }
-  delete $a[1];
-  print "$#a $a[0] $a[1] $a[2]\n";
-
-  use Data::Dumper;
-  my @b = (123, 456, 789);
-  delete $b[0];
-  print Dumper(\@b);
-
-  {
-    my @c = ();
-    my @d = pop @c;
-    print Dumper(\@d);
-  }
-
-  $#a = 1;
-  my @d = splice @a;
-  print Dumper(\@d);
-}
+my $iter = $store->get_iter_first;
+$store->remove ($store->get_iter_first);
+$store->get ($iter, 0);
 

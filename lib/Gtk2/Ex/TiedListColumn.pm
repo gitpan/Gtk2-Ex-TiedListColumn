@@ -23,7 +23,7 @@ use warnings;
 use Carp;
 use List::Util qw(min max);
 
-our $VERSION = 3;
+our $VERSION = 4;
 
 use constant DEBUG => 0;
 
@@ -85,7 +85,7 @@ sub FETCHSIZE {
   return $model->iter_n_children (undef);
 }
 
-# big negatives already normalized to at worst -1 by the time they get here
+# big negatives already normalized to 0 by the time they get here
 sub STORESIZE {
   my ($self, $want_size) = @_;
   if (DEBUG) { print "STORESIZE $want_size, currently ",
@@ -242,6 +242,9 @@ sub SPLICE {
   foreach my $value (@_) {
     $model->insert_with_values ($offset++, $column, $value);
   }
+
+  # here in scalar context $ret[0] is the last removed as per what splice()
+  # should return
   return (wantarray ? @ret : $ret[0]);
 }
 

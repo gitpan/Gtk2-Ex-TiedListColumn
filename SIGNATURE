@@ -15,40 +15,42 @@ not run its Makefile.PL or Build.PL.
 Hash: SHA1
 
 SHA1 842745cb706f8f2126506f544492f7a80dbe29b3 COPYING
-SHA1 d4c18ad2b774f93706c557129b801b06548d9a06 Changes
-SHA1 129dea4ddf7c91d8c3d2daeab9eaec0c4901e374 MANIFEST
-SHA1 00e97fa7664a1ea29a3be5b0b2ec2b0076e002f1 MANIFEST.SKIP
-SHA1 35ae1c68a006d23e7323f1e96ba858cdf56d75cd META.yml
-SHA1 0dd396d4dc43c7dbc317fb0b5e193ae461e6d118 Makefile.PL
-SHA1 b8349b736b02d2cd9b297f062d3ab1e90355367f debian/changelog
+SHA1 6f430430d59befb93851aa0d7002e4431542245f Changes
+SHA1 122a93311959ce6672f41e3cd04add53613a7a91 MANIFEST
+SHA1 9f057ed3ba7d042426c4d899f7685b4ae05076b2 MANIFEST.SKIP
+SHA1 c4a17213edd001ab895c080d3951f4f333f393d5 META.yml
+SHA1 5f96e36ad6f8d04e47e475917530174ccda7e830 Makefile.PL
+SHA1 e1c65cf69b1c63c31a34fbc1c04010d9bb50450c debian/changelog
 SHA1 ac3478d69a3c81fa62e60f5c3696165a4e5e6ac4 debian/compat
-SHA1 86bc9c64f47151c1e6ae0af53f31f09f433a909e debian/control
+SHA1 7851ba1a54d46712f74b24e6cefeaaf297b7ba0f debian/control
 SHA1 5609b45a2416e86b8c690b5e48fc75956e5cb528 debian/copyright
 SHA1 c247b07dc432a2a7bb52bf24132ecdfb560b6fe8 debian/rules
 SHA1 61652cd1568dcf2614df833eba241755eee34e89 debian/source/format
 SHA1 9e0feb6017b8a8962dccbee4138a56cdc857d8c3 debian/watch
-SHA1 ca2c81204b7e197dba8e3f33e0f3a58e1cb6a58b devel/TestWithoutGtk2Methods.pm
 SHA1 bfcc6179f52eb0548479dbfaaf153cc7d228295f devel/array-base.t
-SHA1 5dcebdb0f56920025db7d3463f29d1d3703ec630 devel/splice.pl
-SHA1 00c7fff17badb82bd4750b5cf9c2044bc69678dd devel/tied-simple-list.pl
-SHA1 1d3b7ee3eddbcaa61fa1809e7af90777eb0f4d30 inc/MyMakeMakerExtras.pm
-SHA1 63427b66eb26f013f10c835b0cf320c93361f310 inc/my_pod2html
-SHA1 2ca8fc63e3e170163c505c7c76af2e582b74a29f lib/Gtk2/Ex/TiedListColumn.pm
-SHA1 65c2adf48eb5e4c3541bd571a656ed6f59d19bd3 lib/Gtk2/Ex/TiedTreePath.pm
-SHA1 d5d5c83c83918d8c97ca79e92ea840cdf277f01f t/0-META-read.t
+SHA1 e7c2d8c5f5e31d8f8f702b971c42cde38f727907 devel/splice.pl
+SHA1 8a31b46002beba533826b97616c348524ecdc434 devel/stamp.pl
+SHA1 9cccbecb36a0c7c08377d256f732c57db939f654 devel/tied-simple-list.pl
+SHA1 91f40a4f9faab492cacef63fc315d3eb9de22584 inc/MyMakeMakerExtras.pm
+SHA1 692a1ddc2ca6b98cac7b48ea40bc1ac1509e8ed9 inc/my_pod2html
+SHA1 f239de12cd09818f4fff4eb17fb63e1ab6a283c9 lib/Gtk2/Ex/TiedListColumn.pm
+SHA1 cf0c4477504ce564ebebad35025d76bb160f7b8f lib/Gtk2/Ex/TiedMenuChildren.pm
+SHA1 cb2225685cf12ccadc973f264dd8a62838724c52 lib/Gtk2/Ex/TiedTreePath.pm
+SHA1 9127f78a0dfa04976acbb979dd7862ef59a74c58 t/0-META-read.t
 SHA1 37abd43b41068804ea4bb099fdd89af21be82926 t/0-Test-DistManifest.t
 SHA1 8f93fb4c8f0424a4442cc93c9a2e86342ef55281 t/0-Test-Pod.t
-SHA1 5fa94e1e88e44064d1e6b21c88a4c9374a17bfd1 t/0-Test-Synopsis.t
+SHA1 1de8f07883f6bf1a2ef79f2cb8adf1deb3f61cee t/0-Test-Synopsis.t
 SHA1 fb517c2fae5ddac559318bf6a224949115ea3129 t/0-Test-YAML-Meta.t
-SHA1 e5b9059d5e27d380fc9418095d773ad5f96baa06 t/MyTestHelpers.pm
-SHA1 83e5ba66e40612bf6092e861e9b37d8d7a5d3773 t/TiedListColumn-weaken.t
-SHA1 78e66d7a8e440087f62c43ea664639a65cb1ca28 t/TiedListColumn.t
-SHA1 637037bca1864b36d7fa2e28bb1d042432726533 t/TiedTreePath-weaken.t
-SHA1 3472d460d5d9dead2e87608843e4cce3e2deb4da t/TiedTreePath.t
+SHA1 b98ec63aaa140101fe850d117c483d88b25a32a9 t/MyTestHelpers.pm
+SHA1 01fd7991771a92a780ec67c2f22af7a66a8b63b9 t/TiedListColumn-weaken.t
+SHA1 b54f4fca4d7e1fd8222916237e80a792800109d3 t/TiedListColumn.t
+SHA1 e5dd5f7a582833ef883a1ed2734d208b4c684f2d t/TiedMenuChildren.t
+SHA1 9f088c31961616a80f3552e40a591b2ac6fb102e t/TiedTreePath-weaken.t
+SHA1 5f241540d51e9c5ca4c3df76b8f7c45e86adf5dc t/TiedTreePath.t
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.10 (GNU/Linux)
 
-iD8DBQFL6ODJLFMCIV9q3ToRAujwAJ9YjV+wBfZQMAjedin97DKowJbgogCeOh+8
-a7jQj4HkGYx6DY8PTdL7RfU=
-=lnyf
+iD8DBQFMcwRILFMCIV9q3ToRAqg3AJ91bQw85DbOYh5jBp/n8A8fW9FAVgCeLDWZ
+Sjs3VkTbItqX+Ek+Ce+lyDU=
+=vts5
 -----END PGP SIGNATURE-----

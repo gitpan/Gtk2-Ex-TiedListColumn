@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
 
 # Copyright 2008, 2009, 2010 Kevin Ryde
 
@@ -21,17 +21,13 @@ use 5.008;
 use strict;
 use warnings;
 use Gtk2::Ex::TiedListColumn;
-use Test::More tests => 2524;
+use Test::More tests => 2525;
 
 use lib 't';
 use MyTestHelpers;
+BEGIN { MyTestHelpers::nowarnings() }
 
-BEGIN {
- SKIP: { eval 'use Test::NoWarnings; 1'
-           or skip 'Test::NoWarnings not available', 1; }
-}
-
-my $want_version = 3;
+my $want_version = 4;
 is ($Gtk2::Ex::TiedListColumn::VERSION, $want_version, 'VERSION variable');
 is (Gtk2::Ex::TiedListColumn->VERSION,  $want_version, 'VERSION class method');
 { ok (eval { Gtk2::Ex::TiedListColumn->VERSION($want_version); 1 },
@@ -74,9 +70,9 @@ diag "ListStore can('insert_with_values'): ",
 
 {
   my $store = Gtk2::ListStore->new ('Glib::String');
-  my @a;
-  tie @a, 'Gtk2::Ex::TiedListColumn', $store, 0;
-  my $tobj = tied(@a);
+  my @array;
+  tie @array, 'Gtk2::Ex::TiedListColumn', $store, 0;
+  my $tobj = tied(@array);
 
   is ($tobj->VERSION, $want_version, 'VERSION object method');
   $tobj->VERSION ($want_version);
@@ -105,8 +101,8 @@ diag "ListStore can('insert_with_values'): ",
 #------------------------------------------------------------------------------
 
 my $store = Gtk2::ListStore->new (('Glib::Int') x 6, 'Glib::String');
-tie my @a, 'Gtk2::Ex::TiedListColumn', $store, 6;
-my @b;
+tie my @tarr, 'Gtk2::Ex::TiedListColumn', $store, 6;
+my @plain;
 
 sub store_contents {
   my @ret;
@@ -119,7 +115,7 @@ sub store_contents {
 }
 
 sub set_store {
-  @b = @_;
+  @plain = @_;
   $store->clear;
   foreach (@_) {
     my $iter = $store->insert (999);
@@ -131,24 +127,24 @@ sub set_store {
 # fetch
 
 {
-  my @a;
-  tie @a, 'Gtk2::Ex::TiedListColumn', $store, 6;
+  my @tarr;
+  tie @tarr, 'Gtk2::Ex::TiedListColumn', $store, 6;
 
   set_store ();
-  is ($a[0], undef);
-  is ($a[1], undef);
+  is ($tarr[0], undef);
+  is ($tarr[1], undef);
 
   set_store ('a');
-  is ($a[0], 'a');
-  is ($a[1], undef);
-  is ($a[-1], 'a');
+  is ($tarr[0], 'a');
+  is ($tarr[1], undef);
+  is ($tarr[-1], 'a');
 
   set_store ('a','b');
-  is ($a[0], 'a');
-  is ($a[1], 'b');
-  is ($a[2], undef);
-  is ($a[-1], 'b');
-  is ($a[-2], 'a');
+  is ($tarr[0], 'a');
+  is ($tarr[1], 'b');
+  is ($tarr[2], undef);
+  is ($tarr[-1], 'b');
+  is ($tarr[-2], 'a');
 }
 
 
@@ -157,37 +153,37 @@ sub set_store {
 
 {
   set_store ('a');
-  $a[0] = 'b';
-  $b[0] = 'b';
-  is_deeply (store_contents(), \@b);
-  $a[-1] = 'c';
-  $b[-1] = 'c';
-  is_deeply (store_contents(), \@b);
+  $tarr[0] = 'b';
+  $plain[0] = 'b';
+  is_deeply (store_contents(), \@plain);
+  $tarr[-1] = 'c';
+  $plain[-1] = 'c';
+  is_deeply (store_contents(), \@plain);
 
   set_store ('a','b');
-  $a[0] = 'x';
-  $b[0] = 'x';
-  is_deeply (store_contents(), \@b);
-  $a[1] = 'y';
-  $b[1] = 'y';
-  is_deeply (store_contents(), \@b);
-  $a[-1] = 'z';
-  $b[-1] = 'z';
-  is_deeply (store_contents(), \@b);
-  $a[-2] = 'w';
-  $b[-2] = 'w';
-  is_deeply (store_contents(), \@b);
+  $tarr[0] = 'x';
+  $plain[0] = 'x';
+  is_deeply (store_contents(), \@plain);
+  $tarr[1] = 'y';
+  $plain[1] = 'y';
+  is_deeply (store_contents(), \@plain);
+  $tarr[-1] = 'z';
+  $plain[-1] = 'z';
+  is_deeply (store_contents(), \@plain);
+  $tarr[-2] = 'w';
+  $plain[-2] = 'w';
+  is_deeply (store_contents(), \@plain);
 
   set_store ('a','b');
-  $a[2] = 'x';
-  $b[2] = 'x';
-  is_deeply (store_contents(), \@b,
+  $tarr[2] = 'x';
+  $plain[2] = 'x';
+  is_deeply (store_contents(), \@plain,
              'immediate past end');
 
   set_store ('a','b');
-  $a[5] = 'x';
-  $b[5] = 'x';
-  is_deeply (store_contents(), \@b,
+  $tarr[5] = 'x';
+  $plain[5] = 'x';
+  is_deeply (store_contents(), \@plain,
              'a distance past end');
 }
 
@@ -197,20 +193,20 @@ sub set_store {
 
 {
   set_store ('a');
-  my @a;
-  tie @a, 'Gtk2::Ex::TiedListColumn', $store;
+  my @tarr;
+  tie @tarr, 'Gtk2::Ex::TiedListColumn', $store;
 
   set_store ();
-  is ($#a, -1);
-  is (scalar(@a), 0);
+  is ($#tarr, -1);
+  is (scalar(@tarr), 0);
 
   set_store ('a');
-  is ($#a, 0);
-  is (scalar(@a), 1);
+  is ($#tarr, 0);
+  is (scalar(@tarr), 1);
 
   set_store ('a','b');
-  is ($#a, 1);
-  is (scalar(@a), 2);
+  is ($#tarr, 1);
+  is (scalar(@tarr), 2);
 }
 
 
@@ -219,43 +215,43 @@ sub set_store {
 
 {
   set_store ();
-  $#a = -1;
-  $#b = -1;
-  is_deeply (store_contents(), \@b);
+  $#tarr = -1;
+  $#plain = -1;
+  is_deeply (store_contents(), \@plain);
 
   set_store ();
-  $#a = -2;
-  $#b = -2;
-  is_deeply (store_contents(), \@b);
+  $#tarr = -2;
+  $#plain = -2;
+  is_deeply (store_contents(), \@plain);
 
   set_store ('b');
-  $#a = -1;
-  $#b = -1;
-  is_deeply (store_contents(), \@b,
+  $#tarr = -1;
+  $#plain = -1;
+  is_deeply (store_contents(), \@plain,
              'storesize truncate from 1 to empty');
 
   set_store ('b');
-  $#a = 0;
-  $#b = 0;
-  is_deeply (store_contents(), \@b,
+  $#tarr = 0;
+  $#plain = 0;
+  is_deeply (store_contents(), \@plain,
              'storesize unchanged 1');
 
   set_store ('a','b','c','d');
-  $#a = 1;
-  $#b = 1;
-  is_deeply (store_contents(), \@b,
+  $#tarr = 1;
+  $#plain = 1;
+  is_deeply (store_contents(), \@plain,
              'storesize truncate from 4 to 2');
 
   set_store ();
-  $#a = 2;
-  $#b = 2;
-  is_deeply (store_contents(), \@b,
+  $#tarr = 2;
+  $#plain = 2;
+  is_deeply (store_contents(), \@plain,
              'extend 0 to 3');
 
   set_store ('a');
-  $#a = 1;
-  $#b = 1;
-  is_deeply (store_contents(), \@b,
+  $#tarr = 1;
+  $#plain = 1;
+  is_deeply (store_contents(), \@plain,
              'extend 1 to 2');
 }
 
@@ -264,21 +260,21 @@ sub set_store {
 
 {
   set_store ();
-  is (exists($a[0]), exists($b[0]));
-  is (exists($a[1]), exists($b[1]));
-  is (exists($a[-1]), exists($b[-1]));
+  is (exists($tarr[0]), exists($plain[0]));
+  is (exists($tarr[1]), exists($plain[1]));
+  is (exists($tarr[-1]), exists($plain[-1]));
 
   set_store ('b');
-  is (exists($a[0]), exists($b[0]));
-  is (exists($a[1]), exists($b[1]));
-  is (exists($a[2]), exists($b[2]));
-  is (exists($a[-1]), exists($b[-1]));
-  is (exists($a[-2]), exists($b[-2]));
-  is (exists($a[-99]), exists($b[-99]));
+  is (exists($tarr[0]), exists($plain[0]));
+  is (exists($tarr[1]), exists($plain[1]));
+  is (exists($tarr[2]), exists($plain[2]));
+  is (exists($tarr[-1]), exists($plain[-1]));
+  is (exists($tarr[-2]), exists($plain[-2]));
+  is (exists($tarr[-99]), exists($plain[-99]));
 
   set_store ('a','b');
   foreach my $i (-3 .. 3) {
-    is (exists($a[$i]), exists($b[$i]), "exists $i");
+    is (exists($tarr[$i]), exists($plain[$i]), "exists $i");
   }
 }
 
@@ -289,36 +285,36 @@ sub set_store {
 
 {
   set_store ();
-  delete $a[0];
-  delete $b[0];
-  is_deeply (store_contents(), \@b,
+  delete $tarr[0];
+  delete $plain[0];
+  is_deeply (store_contents(), \@plain,
              'delete non-existent');
 
   set_store ('a');
-  delete $a[0];
-  delete $b[0];
-  is_deeply (store_contents(), \@b,
+  delete $tarr[0];
+  delete $plain[0];
+  is_deeply (store_contents(), \@plain,
              'delete sole element');
 
   set_store ('a');
-  delete $a[99];
-  delete $b[99];
-  is_deeply (store_contents(), \@b,
+  delete $tarr[99];
+  delete $plain[99];
+  is_deeply (store_contents(), \@plain,
              'delete big non-existent');
 
   set_store ('a','b');
-  delete $a[0];
-  delete $b[0];
-  is_deeply (store_contents(), \@b);
+  delete $tarr[0];
+  delete $plain[0];
+  is_deeply (store_contents(), \@plain);
   #
   # tied array not the same as ordinary perl array for exists on deleted
   # elements
-  # is (exists($a[0]), exists($b[0]));
+  # is (exists($tarr[0]), exists($plain[0]));
 
   set_store ('a','b');
-  delete $a[1];
-  delete $b[1];
-  is_deeply (store_contents(), \@b,
+  delete $tarr[1];
+  delete $plain[1];
+  is_deeply (store_contents(), \@plain,
              'delete last of 2');
 
 }
@@ -329,15 +325,15 @@ sub set_store {
 
 {
   set_store ();
-  @a = ();
-  @b = ();
-  is_deeply (store_contents(), \@b,
+  @tarr = ();
+  @plain = ();
+  is_deeply (store_contents(), \@plain,
              'clear empty');
 
   set_store ('a','b','c');
-  @a = ();
-  @b = ();
-  is_deeply (store_contents(), \@b,
+  @tarr = ();
+  @plain = ();
+  is_deeply (store_contents(), \@plain,
              'clear 3');
 }
 
@@ -350,13 +346,13 @@ SKIP: {
     or skip 'no insert_with_values() for push', 2;
 
   set_store ();
-  push @a, 'z';
-  push @b, 'z';
-  is_deeply (store_contents(), \@b);
+  push @tarr, 'z';
+  push @plain, 'z';
+  is_deeply (store_contents(), \@plain);
 
-  push @a, 'x','y';
-  push @b, 'x','y';
-  is_deeply (store_contents(), \@b);
+  push @tarr, 'x','y';
+  push @plain, 'x','y';
+  is_deeply (store_contents(), \@plain);
 }
 
 #------------------------------------------------------------------------------
@@ -364,20 +360,20 @@ SKIP: {
 
 {
   set_store ();
-  is (pop @a, pop @b,
+  is (pop @tarr, pop @plain,
       'pop empty - scalar context');
-  is_deeply ([pop @a], [pop @b],
+  is_deeply ([pop @tarr], [pop @plain],
              'pop empty - array context');
-  is_deeply (store_contents(), \@b,
+  is_deeply (store_contents(), \@plain,
              'pop empty');
 
   set_store ('x');
-  is (pop @a, pop @b);
-  is_deeply (store_contents(), \@b);
+  is (pop @tarr, pop @plain);
+  is_deeply (store_contents(), \@plain);
 
   set_store ('x','y');
-  is (pop @a, pop @b);
-  is_deeply (store_contents(), \@b);
+  is (pop @tarr, pop @plain);
+  is_deeply (store_contents(), \@plain);
 }
 
 #------------------------------------------------------------------------------
@@ -385,17 +381,17 @@ SKIP: {
 
 {
   set_store ();
-  is_deeply ([shift @a], [shift @b]);
-  is_deeply (store_contents(), \@b,
+  is_deeply ([shift @tarr], [shift @plain]);
+  is_deeply (store_contents(), \@plain,
              'shift empty');
 
   set_store ('x');
-  is_deeply ([shift @a], [shift @b]);
-  is_deeply (store_contents(), \@b);
+  is_deeply ([shift @tarr], [shift @plain]);
+  is_deeply (store_contents(), \@plain);
 
   set_store ('x','y');
-  is_deeply ([shift @a], [shift @b]);
-  is_deeply (store_contents(), \@b);
+  is_deeply ([shift @tarr], [shift @plain]);
+  is_deeply (store_contents(), \@plain);
 }
 
 #------------------------------------------------------------------------------
@@ -406,16 +402,26 @@ SKIP: {
     or skip 'no insert_with_values() for unshift', 4;
 
   set_store ();
-  is (unshift(@a,'z'), unshift(@b,'z'));
-  is_deeply (store_contents(), \@b);
+  is (unshift(@tarr,'z'), unshift(@plain,'z'));
+  is_deeply (store_contents(), \@plain);
 
-  is (unshift(@a,'x','y'), unshift(@b,'x','y'));
-  is_deeply (store_contents(), \@b);
+  is (unshift(@tarr,'x','y'), unshift(@plain,'x','y'));
+  is_deeply (store_contents(), \@plain);
 }
 
 
 #------------------------------------------------------------------------------
 # splice
+
+{
+  set_store ('a','b');
+  my $got = splice @tarr, -2,2;
+  is ($got, 'b', 'splice -2,2 to empty, scalar return');
+
+  my @plain = ('a','b');
+  $got = splice @plain, -2,2;
+  is ($got, 'b', 'splice -2,2 to empty on plain, scalar return');
+}
 
 # this is pretty excessive, but makes sure to cover all combinations of
 # positive and negative offset and length exceeding or not the array bounds.
@@ -424,14 +430,14 @@ SKIP: {
   $store->can('insert_with_values')
     or skip 'no insert_with_values() for splice', 2437;
 
-  my $a_warn = 0;
-  my $b_warn = 0;
+  my $tarr_warn = 0;
+  my $plain_warn = 0;
   local $SIG{__WARN__} = sub {
     my ($msg) = @_;
     if ($msg =~ /^TiedListColumn/) {
-      $a_warn++;
+      $tarr_warn++;
     } elsif ($msg =~ /^splice()/) {
-      $b_warn++;
+      $plain_warn++;
     } else {
       print STDERR $msg;
     }
@@ -451,25 +457,25 @@ SKIP: {
                     . "  '" . join(',',@$new_content) . "'";
 
           set_store (@$old_content);
-          my $a_ret = scalar (splice @a, $offset, $length, @$new_content);
-          my $b_ret = scalar (splice @b, $offset, $length, @$new_content);
-          is        ($a_ret, $b_ret,
+          my $tarr_ret = scalar (splice @tarr, $offset, $length, @$new_content);
+          my $plain_ret = scalar (splice @plain, $offset, $length, @$new_content);
+          is        ($tarr_ret, $plain_ret,
                      "scalar context return: " . $name);
-          is_deeply (store_contents(), \@b,
+          is_deeply (store_contents(), \@plain,
                      "scalar context leaves: " . $name);
 
           set_store (@$old_content);
-          $a_ret = [splice @a, $offset, $length, @$new_content];
-          $b_ret = [splice @b, $offset, $length, @$new_content];
-          is_deeply ($a_ret, $b_ret,
+          $tarr_ret = [splice @tarr, $offset, $length, @$new_content];
+          $plain_ret = [splice @plain, $offset, $length, @$new_content];
+          is_deeply ($tarr_ret, $plain_ret,
                      "array context return: " . $name);
-          is_deeply (store_contents(), \@b,
+          is_deeply (store_contents(), \@plain,
                      "array context leaves: " . $name);
         }
       }
     }
   }
-  is ($a_warn, $b_warn, 'warnings count');
+  is ($tarr_warn, $plain_warn, 'warnings count');
 }
 
 exit 0;

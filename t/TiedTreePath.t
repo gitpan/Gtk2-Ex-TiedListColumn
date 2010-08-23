@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
 
 # Copyright 2008, 2009, 2010 Kevin Ryde
 
@@ -20,18 +20,15 @@
 use 5.008;
 use strict;
 use warnings;
-use Test::More tests => 2542;
+use Test::More tests => 2543;
 
 use lib 't';
 use MyTestHelpers;
+BEGIN { MyTestHelpers::nowarnings() }
 
-BEGIN {
- SKIP: { eval 'use Test::NoWarnings; 1'
-           or skip 'Test::NoWarnings not available', 1; }
-}
 require Gtk2::Ex::TiedTreePath;
 
-my $want_version = 3;
+my $want_version = 4;
 is ($Gtk2::Ex::TiedTreePath::VERSION, $want_version, 'VERSION variable');
 is (Gtk2::Ex::TiedTreePath->VERSION,  $want_version, 'VERSION class method');
 { ok (eval { Gtk2::Ex::TiedTreePath->VERSION($want_version); 1 },
@@ -406,6 +403,16 @@ sub set_path {
 
 #------------------------------------------------------------------------------
 # splice
+
+{
+  set_path (1,2);
+  my $got = splice @ttp, -2,2;
+  is ($got, 2, 'splice -2,2 to empty, scalar return');
+
+  my @plain = (1,2);
+  $got = splice @plain, -2,2;
+  is ($got, 2, 'splice -2,2 to empty on plain, scalar return');
+}
 
 # this is pretty excessive, but makes sure to cover all combinations of
 # positive and negative offset and length exceeding or not the array bounds.
