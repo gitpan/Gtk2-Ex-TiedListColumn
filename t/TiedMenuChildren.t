@@ -35,7 +35,7 @@ Gtk2->init_check
   or plan skip_all => 'due to no DISPLAY available';
 plan tests => 2546;
 
-my $want_version = 0;
+my $want_version = 5;
 is ($Gtk2::Ex::TiedMenuChildren::VERSION, $want_version,
     'VERSION variable');
 is (Gtk2::Ex::TiedMenuChildren->VERSION,  $want_version,

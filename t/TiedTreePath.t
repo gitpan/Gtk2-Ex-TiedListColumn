@@ -28,7 +28,7 @@ BEGIN { MyTestHelpers::nowarnings() }
 
 require Gtk2::Ex::TiedTreePath;
 
-my $want_version = 4;
+my $want_version = 5;
 is ($Gtk2::Ex::TiedTreePath::VERSION, $want_version, 'VERSION variable');
 is (Gtk2::Ex::TiedTreePath->VERSION,  $want_version, 'VERSION class method');
 { ok (eval { Gtk2::Ex::TiedTreePath->VERSION($want_version); 1 },

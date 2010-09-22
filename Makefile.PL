@@ -49,7 +49,9 @@ MyMakeMakerExtras::WriteMakefile
         optional_features
         => { maximum_tests
              => { description => 'Have "make test" do as much as possible.',
-                  requires => { 'Test::Weaken' => '2.000',
+                  requires => {
+                               # 3.002 preferred to traverse tied() obj
+                               'Test::Weaken' => '3.002',
                               },
                 },
              maximum_devel

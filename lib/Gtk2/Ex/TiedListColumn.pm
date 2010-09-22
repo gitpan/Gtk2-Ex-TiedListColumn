@@ -23,7 +23,7 @@ use warnings;
 use Carp;
 use List::Util qw(min max);
 
-our $VERSION = 4;
+our $VERSION = 5;
 
 use constant DEBUG => 0;
 

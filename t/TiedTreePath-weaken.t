@@ -26,14 +26,15 @@ use lib 't';
 use MyTestHelpers;
 BEGIN { MyTestHelpers::nowarnings() }
 
-# Test::Weaken 2.000 for leaks(), but 3.001 better as descends into the tied
-# object ...
+# Test::Weaken 2.000 for leaks(), but 3.002 preferred as descends into the
+# tied object ...
 #
 eval "use Test::Weaken 2.000; 1"
   or plan skip_all => "due to Test::Weaken 2.000 not available -- $@";
+diag ("Test::Weaken version ", Test::Weaken->VERSION);
+
 plan tests => 2;
 
-diag ("Test::Weaken version ", Test::Weaken->VERSION);
 require Gtk2;
 MyTestHelpers::glib_gtk_versions();
 

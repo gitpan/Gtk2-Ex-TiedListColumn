@@ -27,7 +27,7 @@ use List::Util qw(min max);
 # uncomment this to run the ### lines
 #use Smart::Comments;
 
-our $VERSION = 0;
+our $VERSION = 5;
 
 sub new {
   my ($class, $menu) = @_;

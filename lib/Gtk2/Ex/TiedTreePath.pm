@@ -21,7 +21,7 @@ use 5.008;
 use strict;
 use warnings;
 
-our $VERSION = 4;
+our $VERSION = 5;
 
 # uncomment this to run the ### lines
 #use Smart::Comments;
